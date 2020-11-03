@@ -1,11 +1,11 @@
-resource "aws_instance" "base" {
+resource "aws_instance" "ec2" {
 
   count                  = 2
   ami                    = "ami-2757f631"
   instance_type          = "t2.micro"
   key_name               = "aws.red"
   monitoring             = true
-  vpc_security_group_ids = [aws_security_group.allow_ports.id]
+  vpc_security_group_ids = [aws_security_group.frontend_ports.id]
   # subnet_id              = "subnet-8f1abdae"
   user_data = <<-EOF
           #! /bin/bash
@@ -24,9 +24,9 @@ resource "aws_instance" "base" {
 }
 
 resource "aws_eip" "myeip" {
-  count    = length(aws_instance.base)
+  count    = length(aws_instance.ec2)
   vpc      = true
-  instance = "${element(aws_instance.base.*.id, count.index)}"
+  instance = "${element(aws_instance.ec2.*.id, count.index)}"
 
   tags = {
     Name = "LABinstance-${count.index + 1}"
@@ -38,7 +38,7 @@ resource "aws_default_vpc" "default" {
   }
 }
 
-resource "aws_security_group" "allow_ports" {
+resource "aws_security_group" "frontend_ports" {
   name        = "alb"
   description = "Allow inbound traffic"
   vpc_id      = "${aws_default_vpc.default.id}"
@@ -74,7 +74,7 @@ resource "aws_security_group" "allow_ports" {
   }
 
   tags = {
-    Name = "allow_ports"
+    Name = "frontend_ports"
   }
 
 }
@@ -108,7 +108,7 @@ resource "aws_alb" "front_end" {
   load_balancer_type = "application"
   internal           = false
   ip_address_type    = "ipv4"
-  security_groups    = ["${aws_security_group.allow_ports.id}"]
+  security_groups    = ["${aws_security_group.frontend.id}"]
   subnets            = data.aws_subnet_ids.subnet.ids
 
   tags = {
@@ -128,7 +128,7 @@ resource "aws_lb_listener" "front_end" {
   }
 }
 resource "aws_alb_target_group_attachment" "ec2_attach" {
-  count            = length(aws_instance.base)
+  count            = length(aws_instance.ec2)
   target_group_arn = aws_alb_target_group.my-target-group.arn
-  target_id        = aws_instance.base[count.index].id
+  target_id        = aws_instance.ec2[count.index].id
 }
