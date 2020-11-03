@@ -1,5 +1,5 @@
 resource "aws_instance" "ec2" {
-
+#create ec2
   count                  = 2
   ami                    = "ami-2757f631"
   instance_type          = "t2.micro"
@@ -22,7 +22,7 @@ resource "aws_instance" "ec2" {
   }
 
 }
-
+#create_elastic_IP
 resource "aws_eip" "myeip" {
   count    = length(aws_instance.ec2)
   vpc      = true
@@ -37,7 +37,7 @@ resource "aws_default_vpc" "default" {
     Name = "Default VPC"
   }
 }
-
+#create_sec_group
 resource "aws_security_group" "frontend_ports" {
   name        = "alb"
   description = "Allow inbound traffic"
@@ -78,7 +78,7 @@ resource "aws_security_group" "frontend_ports" {
   }
 
 }
-
+#add_subnets
 data "aws_subnet_ids" "subnet" {
 
   vpc_id = "${aws_default_vpc.default.id}"
@@ -108,7 +108,7 @@ resource "aws_alb" "front_end" {
   load_balancer_type = "application"
   internal           = false
   ip_address_type    = "ipv4"
-  security_groups    = ["${aws_security_group.frontend.id}"]
+  security_groups    = ["${aws_security_group.frontend_ports.id}"]
   subnets            = data.aws_subnet_ids.subnet.ids
 
   tags = {
@@ -126,9 +126,10 @@ resource "aws_lb_listener" "front_end" {
     target_group_arn = "${aws_alb_target_group.my-target-group.arn}"
 
   }
-}
+}#attach_ec2
 resource "aws_alb_target_group_attachment" "ec2_attach" {
   count            = length(aws_instance.ec2)
   target_group_arn = aws_alb_target_group.my-target-group.arn
   target_id        = aws_instance.ec2[count.index].id
 }
+
