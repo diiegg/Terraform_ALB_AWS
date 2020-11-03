@@ -1,8 +1,6 @@
 # Terraform_ALB_AWS
 Deploying a web server and a application load balancer with Terraform on AWS
 
-![Terraform](https://github.com/diiegg/Terraform_ALB_AWS/workflows/Terraform/badge.svg)
-![Markdown](https://github.com/diiegg/Terraform_ALB_AWS/workflows/Markdown/badge.svg)
 [![GitHub tag](https://img.shields.io/github/tag/tmknom/terraform-aws-alb.svg)](https://registry.terraform.io/modules/tmknom/alb/aws)
 [![License](https://img.shields.io/github/license/tmknom/terraform-aws-alb.svg)](https://opensource.org/licenses/MIT)
 
