@@ -54,7 +54,7 @@ This module provides:
 
 - [Elastic IP Address](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html)
 - [Application load balancer (ALB)](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html)
-- [Ec2 instance)](https://aws.amazon.com/ec2/instance-types/)
+- [Ec2 instance](https://aws.amazon.com/ec2/instance-types/)
 - [NginX web server)](https://www.nginx.com)
 
 ## Usage
