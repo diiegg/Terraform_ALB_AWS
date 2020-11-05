@@ -75,7 +75,7 @@ resource "aws_instance" "base" {
   count                  = 2
   ami                    = "ami-2757f631"
   instance_type          = "t2.micro"
-  key_name               = "aws.red"
+  key_name               = "yourkey"
   monitoring             = true
   vpc_security_group_ids = [aws_security_group.allow_ports.id]
   # subnet_id              = "subnet-8f1abdae"
